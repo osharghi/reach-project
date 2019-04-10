@@ -31,7 +31,7 @@ class Game
         
         for _ in 0..<word.count
         {
-            displayWord = displayWord + "_"
+            displayWord = displayWord + " " + "_"
         }
         
         self.displayWord = displayWord
@@ -41,16 +41,15 @@ class Game
     {
         for (index, char) in word.enumerated()
         {
-            
             if(charDict[char] != nil)
+            {
+                charDict[char]!.append(index)
+            }
+            else
             {
                 var arr : [Int] = Array()
                 arr.append(index)
                 charDict[char] = arr
-            }
-            else
-            {
-                charDict[char]!.append(index)
             }
         }
     }

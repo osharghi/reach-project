@@ -25,6 +25,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             "Words": pastWords
             ])
         
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        let nav1 = UINavigationController()
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+        let resultViewController = storyBoard.instantiateViewController(withIdentifier: "MainView") as! ViewController
+        nav1.viewControllers = [resultViewController]
+        self.window!.rootViewController = nav1
+        self.window?.makeKeyAndVisible()
+        
         return true
     }
 

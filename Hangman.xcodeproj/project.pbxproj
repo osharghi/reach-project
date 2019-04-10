@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F77A3F5225D65A700258066 /* GameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F77A3F4225D65A700258066 /* GameController.swift */; };
 		4FB5387F225C19AC00B193A7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB5387E225C19AC00B193A7 /* AppDelegate.swift */; };
 		4FB53881225C19AC00B193A7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB53880225C19AC00B193A7 /* ViewController.swift */; };
 		4FB53884225C19AC00B193A7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4FB53882225C19AC00B193A7 /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4F77A3F4225D65A700258066 /* GameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameController.swift; sourceTree = "<group>"; };
 		4FB5387B225C19AC00B193A7 /* Hangman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hangman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FB5387E225C19AC00B193A7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4FB53880225C19AC00B193A7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 			children = (
 				4FB5387E225C19AC00B193A7 /* AppDelegate.swift */,
 				4FB53880225C19AC00B193A7 /* ViewController.swift */,
+				4F77A3F4225D65A700258066 /* GameController.swift */,
 				4FB53890225C216800B193A7 /* History.swift */,
 				4FB53892225C238A00B193A7 /* Game.swift */,
 				4FB53882225C19AC00B193A7 /* Main.storyboard */,
@@ -142,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4FB53891225C216800B193A7 /* History.swift in Sources */,
+				4F77A3F5225D65A700258066 /* GameController.swift in Sources */,
 				4FB53881225C19AC00B193A7 /* ViewController.swift in Sources */,
 				4FB5387F225C19AC00B193A7 /* AppDelegate.swift in Sources */,
 				4FB53893225C238A00B193A7 /* Game.swift in Sources */,
