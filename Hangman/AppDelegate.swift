@@ -18,27 +18,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let historyArray : [History] = Array()
         let usedWordsSet = Set<String>()
-        let currentDict: [String] = Array()
+        let wordDict: [String] = Array()
         
-//        let encodedData = NSKeyedArchiver.archivedData(withRootObject: pastWords, requiringSecureCoding: false)
-
-        
-//        UserDefaults.standard.register(defaults: [
-//            "History": resultArray,
-//            "WordsUsed": encodedData,
-//            "lastDifficulty": 5,
-//            "lastDictionary": currentDict
-//            ])
         
         UserDefaults.standard.set(5, forKey: "lastDifficulty")
         UserDefaults.standard.set(historyArray, forKey: "History")
-        UserDefaults.standard.set(currentDict, forKey: "lastDictionary")
-//        UserDefaults.standard.set(usedWordsSet, forKey: "usedWordsSet")
+        UserDefaults.standard.set(wordDict, forKey: "lastDictionary")
         UserDefaults.standard.set(try? PropertyListEncoder().encode(usedWordsSet), forKey:"usedWordsSet")
-
-
-        
-        
 
         
         self.window = UIWindow(frame: UIScreen.main.bounds)

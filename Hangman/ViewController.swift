@@ -12,8 +12,10 @@ class ViewController: UIViewController {
 
     var slider = UISlider()
     var difficultyLabel = UILabel()
+    var errorLabel = UILabel()
     var rightButton : UIBarButtonItem?
     let defaults = UserDefaults.standard
+    var words : [String]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +26,7 @@ class ViewController: UIViewController {
         setUpSliderLabel()
         setUpRightButton()
         setUpLeftButton()
+        setUpErrorLabel()
     }
     
     func setUpSlider(value: Int)
@@ -103,14 +106,27 @@ class ViewController: UIViewController {
         return spinner
     }
     
-    func makeRequest() -> [String]
+    func setUpErrorLabel()
+    {
+        errorLabel.text = ""
+        
+        self.view.addSubview(errorLabel)
+        errorLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            
+            errorLabel.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 100),
+            errorLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            errorLabel.centerYAnchor.constraint(equalTo: self.slider.centerYAnchor, constant: 20)
+            ])
+    }
+    
+    func makeRequest()
     {
         let spinner = setUpSpinner()
-        var words : [String] = Array()
-
+        var dict : [String] = Array()
         var url = URLComponents(string: "http://app.linkedin-reach.io/words")!
         let value = Int(slider.value)
-        
         
         url.queryItems = [
             URLQueryItem(name: "difficulty", value: String(value))
@@ -121,6 +137,12 @@ class ViewController: UIViewController {
             guard error == nil else {
                 print("error calling GET")
                 print(error!)
+                
+                DispatchQueue.main.async {
+                    self.updateErrorLabel(requestSuccessful: false)
+                    spinner.stopAnimating()
+                }
+                
                 return
             }
             
@@ -128,14 +150,14 @@ class ViewController: UIViewController {
             print(String(data: data, encoding: .utf8)!)
             
             DispatchQueue.main.async {
+                self.updateErrorLabel(requestSuccessful: true)
                 spinner.stopAnimating()
-//                self.requesetDone()
+                self.requesetDone()
             }
         }
         
         task.resume()
-        
-        return words
+        return
     }
     
     func setUpRightButton()
@@ -152,6 +174,13 @@ class ViewController: UIViewController {
         
     }
     
+    func updateDefaults()
+    {
+        let currentDifficulty = Int(slider.value)
+        defaults.set(currentDifficulty, forKey: "lastDifficulty")
+        defaults.set(words, forKey: "lastDictionary")
+    }
+    
     @objc func playTapped()
     {
         rightButton?.isEnabled = false
@@ -159,36 +188,44 @@ class ViewController: UIViewController {
         let lastDifficulty = defaults.object(forKey:"lastDifficulty") as! Int
         let currentDifficulty = Int(slider.value)
         
-        var words = defaults.object(forKey:"Words") as! [String]
+        let previousDictionary = defaults.object(forKey:"lastDictionary") as! [String]
 
-        if(lastDifficulty != currentDifficulty)
+        if(lastDifficulty != currentDifficulty) //Need to update dictionary
         {
-            words = makeRequest() //Get new list of words
-            defaults.set(currentDifficulty, forKey: "lastDifficulty")
-            defaults.set(words, forKey: "lastDictionary")
-            self.requesetDone()
+            makeRequest() //Get new dictionary
         }
         else
         {
-            if(words.isEmpty)
+            if(previousDictionary.isEmpty)
             {
-                words = makeRequest()
-                defaults.set(words, forKey: "lastDictionary")
-                self.requesetDone()
+                makeRequest() //Get new dictionary
             }
             else
             {
-                self.requesetDone()
+                words = previousDictionary // Nil check?
+                self.requesetDone()  //Use previously stored dictionary. Go to game.
             }
         }
-        
     }
     
     func requesetDone()
     {
         rightButton?.isEnabled = true
+        self.updateDefaults()
         let gameVC = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "GameController") as? GameController
         self.navigationController?.pushViewController(gameVC!, animated: true)
+    }
+    
+    func updateErrorLabel(requestSuccessful: Bool)
+    {
+        if(requestSuccessful)
+        {
+            self.errorLabel.text = "Unable to get word list. Check network connection."
+        }
+        else
+        {
+            self.errorLabel.text = ""
+        }
     }
     
     @objc func historyTapped()
