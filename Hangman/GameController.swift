@@ -8,13 +8,14 @@
 
 import UIKit
 
-class GameController: UIViewController {
+class GameController: UIViewController, UITextFieldDelegate {
 
     var textField = UITextField()
     var guessesListLabel = UILabel()
     var keyboardHeight : CGFloat = 0
     var tryCountLabel = UILabel()
     var gameWordLabel = UILabel()
+    var messageLabel = UILabel()
     var game : Game?
 
     
@@ -37,6 +38,7 @@ class GameController: UIViewController {
         drawUnderLine()
         setUpTryCountLabel()
         setUpGameWordLabel()
+        setUpMessageLabel()
 
     }
     
@@ -56,23 +58,21 @@ class GameController: UIViewController {
             
             textField.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 100),
             textField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            textField.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 15)
+            textField.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -40)
             ])
         
         
         textField.becomeFirstResponder()
+        self.textField.delegate = self
     }
     
     func setUpGameWordLabel()
     {
-        
-//        gameWordLabel.text = game?.displayWord
+        updateGameWordLabel()
         gameWordLabel.font = gameWordLabel.font.withSize(40.0)
-        gameWordLabel.text = "SOMETHING SOMETHING SOMETHING"
         self.view.addSubview(gameWordLabel)
         gameWordLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        gameWordLabel.backgroundColor = .red
         gameWordLabel.numberOfLines = 1
         gameWordLabel.adjustsFontSizeToFitWidth = true
         gameWordLabel.textAlignment = .center
@@ -82,7 +82,44 @@ class GameController: UIViewController {
             
             gameWordLabel.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 100),
             gameWordLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            gameWordLabel.centerYAnchor.constraint(equalTo: self.view.topAnchor, constant: 250)
+            gameWordLabel.centerYAnchor.constraint(equalTo: self.view.topAnchor, constant: 150)
+            ])
+    }
+    
+    func updateGameWordLabel()
+    {
+        gameWordLabel.text = ""
+        
+        for (index, char) in (game?.displayWord?.enumerated())!
+        {
+            if(index != 0)
+            {
+                gameWordLabel.text = gameWordLabel.text! + " " + String(char)
+            }
+            else
+            {
+                gameWordLabel.text = String(char)
+            }
+        }
+    }
+    
+    func setUpMessageLabel()
+    {
+        messageLabel.text = ""
+        
+        self.view.addSubview(messageLabel)
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        messageLabel.numberOfLines = 1
+        messageLabel.adjustsFontSizeToFitWidth = true
+        messageLabel.textAlignment = .center
+        messageLabel.minimumScaleFactor = 0.1
+        
+        NSLayoutConstraint.activate([
+            
+            messageLabel.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 100),
+            messageLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            messageLabel.topAnchor.constraint(equalTo: self.tryCountLabel.bottomAnchor, constant: 20)
             ])
         
     }
@@ -99,6 +136,8 @@ class GameController: UIViewController {
     func setUpGuessListLabel()
     {
         guessesListLabel.text = "Guesses: "
+        guessesListLabel.font = gameWordLabel.font.withSize(14.0)
+
         self.view.addSubview(guessesListLabel)
         guessesListLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -120,7 +159,7 @@ class GameController: UIViewController {
         NSLayoutConstraint.activate([
             
             tryCountLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            tryCountLabel.topAnchor.constraint(equalTo: self.textField.bottomAnchor, constant: 8)
+            tryCountLabel.topAnchor.constraint(equalTo: self.textField.bottomAnchor, constant: 12)
             ])
     }
 
@@ -135,6 +174,49 @@ class GameController: UIViewController {
             let keyboardRectangle = keyboardFrame.cgRectValue
             keyboardHeight = keyboardRectangle.height
             print(keyboardHeight)
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        print("return pressed")
+        checkInput()
+        return false
+    }
+    
+    func checkInput()
+    {
+        if(textField.text?.count == 1)
+        {
+            messageLabel.text = game?.guess(guess: textField.text!)
+            updateGameWordLabel()
+            updateTryCountLabel()
+            updateGuessesListLabel()
+        }
+        else if(textField.text?.count == game?.word?.count)
+        {
+            messageLabel.text = game?.guess(guess: textField.text!)
+            updateGameWordLabel()
+            updateTryCountLabel()
+            updateGuessesListLabel()
+        }
+        else
+        {
+            messageLabel.text = "Guess needs to be either one letter or entire word."
+        }
+    }
+    
+    func updateTryCountLabel()
+    {
+        let count = game?.tryCount
+        tryCountLabel.text = String(count!)
+    }
+    
+    func updateGuessesListLabel()
+    {
+        guessesListLabel.text = "Guesses: "
+        for string in game!.guesses
+        {
+            guessesListLabel.text = guessesListLabel.text! + string
         }
     }
 

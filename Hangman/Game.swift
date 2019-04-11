@@ -14,8 +14,8 @@ class Game
     var word: String?
     var displayWord: String?
     var lettersLeft: Int?
-    var charDict: [Character: [Int]] = Dictionary()
-    var guesses = Set<Character>()
+    var charDict: [String: [Int]] = Dictionary()
+    var guesses = Set<String>()
     
     init(word: String)
     {
@@ -31,7 +31,7 @@ class Game
         
         for _ in 0..<word.count
         {
-            displayWord = displayWord + " " + "_"
+            displayWord = displayWord + "_"
         }
         
         self.displayWord = displayWord
@@ -41,52 +41,70 @@ class Game
     {
         for (index, char) in word.enumerated()
         {
-            if(charDict[char] != nil)
+            if(charDict[String(char)] != nil)
             {
-                charDict[char]!.append(index)
+                charDict[String(char)]!.append(index)
             }
             else
             {
                 var arr : [Int] = Array()
                 arr.append(index)
-                charDict[char] = arr
+                charDict[String(char)] = arr
             }
         }
     }
     
-    func guess(letter: Character) -> String
+    func guess(guess: String) -> String
     {
-        if(charDict[letter] != nil)
+        let guess_low = guess.lowercased()
+
+        if(guess_low.count == 1)
         {
-            if(guesses.contains(letter))
+            if(charDict[guess_low] != nil)
             {
-                //Letter already successfully guessed
-                return "You have already guessed this letter"
+                if(guesses.contains(guess_low))
+                {
+                    //Letter already successfully guessed
+                    return "You have already guessed this letter"
+                }
+                else
+                {
+                    guesses.insert(guess_low)
+                    let letterCount = charDict[guess_low]!.count
+                    lettersLeft = lettersLeft! - letterCount
+                    updateDisplayWord(letter: guess_low)
+                    return "Guess correct!"
+                }
             }
             else
             {
-                guesses.insert(letter)
-                let letterCount = charDict[letter]!.count
-                lettersLeft = lettersLeft! - letterCount
-                updateDisplayWord(letter: letter)
-                return "Guess correct!"
+                guesses.insert(guess_low)
+                tryCount = tryCount - 1
+                return "Incorrect guess!"
             }
         }
         else
         {
-            guesses.insert(letter)
-            tryCount = tryCount - 1
-            return "Incorrect guess!"
+            if(guess_low == word)
+            {
+                displayWord = word
+                lettersLeft = 0
+                return "You win!"
+            }
+            else
+            {
+                tryCount = tryCount - 1
+                return "Incorrect guess!"
+            }
         }
     }
     
-    func updateDisplayWord(letter: Character)
+    func updateDisplayWord(letter: String)
     {
         var indices = charDict[letter]!
         var buildWord = ""
         
         var  i = 0;
-        let stop = indices.count
         
         for (index, char) in displayWord!.enumerated()
         {
@@ -96,11 +114,6 @@ class Game
                 {
                     buildWord = buildWord + String(letter)
                     i = i + 1
-                    
-                    if(i == stop)
-                    {
-                        break
-                    }
                 }
                 else
                 {
