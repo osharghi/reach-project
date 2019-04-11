@@ -13,21 +13,24 @@ class ViewController: UIViewController {
     var slider = UISlider()
     var difficultyLabel = UILabel()
     var rightButton : UIBarButtonItem?
+    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpSlider()
+        
+        let difficulty = defaults.object(forKey:"lastDifficulty") as! Int
+
+        setUpSlider(value: difficulty)
         setUpSliderLabel()
         setUpRightButton()
         setUpLeftButton()
-        
     }
     
-    func setUpSlider()
+    func setUpSlider(value: Int)
     {
         slider.minimumValue = 1
         slider.maximumValue = 10
-        slider.value = 5
+        slider.value = Float(value)
         
         self.view.addSubview(slider)
         slider.translatesAutoresizingMaskIntoConstraints = false
@@ -72,7 +75,6 @@ class ViewController: UIViewController {
         
         let value = Int(slider.value)
         difficultyLabel.text = "Difficulty: " + String(value)
-
     }
     
     @objc func sliderValueChanged(_ sender: UISlider)
@@ -82,16 +84,8 @@ class ViewController: UIViewController {
         difficultyLabel.text = "Difficulty: " + String(value)
     }
     
-    func makeRequest()
+    func setUpSpinner() -> UIActivityIndicatorView
     {
-        var url = URLComponents(string: "http://app.linkedin-reach.io/words")!
-        let value = Int(slider.value)
-        
-        
-        url.queryItems = [
-            URLQueryItem(name: "difficulty", value: String(value))
-        ]
-        
         let spinner = UIActivityIndicatorView(style: .whiteLarge)
         
         self.view.addSubview(spinner)
@@ -106,6 +100,21 @@ class ViewController: UIViewController {
         
         spinner.startAnimating()
         
+        return spinner
+    }
+    
+    func makeRequest() -> [String]
+    {
+        let spinner = setUpSpinner()
+        var words : [String] = Array()
+
+        var url = URLComponents(string: "http://app.linkedin-reach.io/words")!
+        let value = Int(slider.value)
+        
+        
+        url.queryItems = [
+            URLQueryItem(name: "difficulty", value: String(value))
+        ]
         
         let task = URLSession.shared.dataTask(with: url.url!) {(data, response, error) in
             
@@ -120,11 +129,13 @@ class ViewController: UIViewController {
             
             DispatchQueue.main.async {
                 spinner.stopAnimating()
-                self.requesetDone()
+//                self.requesetDone()
             }
         }
         
         task.resume()
+        
+        return words
     }
     
     func setUpRightButton()
@@ -144,7 +155,33 @@ class ViewController: UIViewController {
     @objc func playTapped()
     {
         rightButton?.isEnabled = false
-        makeRequest()
+        
+        let lastDifficulty = defaults.object(forKey:"lastDifficulty") as! Int
+        let currentDifficulty = Int(slider.value)
+        
+        var words = defaults.object(forKey:"Words") as! [String]
+
+        if(lastDifficulty != currentDifficulty)
+        {
+            words = makeRequest() //Get new list of words
+            defaults.set(currentDifficulty, forKey: "lastDifficulty")
+            defaults.set(words, forKey: "lastDictionary")
+            self.requesetDone()
+        }
+        else
+        {
+            if(words.isEmpty)
+            {
+                words = makeRequest()
+                defaults.set(words, forKey: "lastDictionary")
+                self.requesetDone()
+            }
+            else
+            {
+                self.requesetDone()
+            }
+        }
+        
     }
     
     func requesetDone()

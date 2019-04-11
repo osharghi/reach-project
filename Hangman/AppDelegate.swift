@@ -16,14 +16,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        let resultArray : [History] = Array()
-        let pastWords : [String] = Array()
+        let historyArray : [History] = Array()
+        let usedWordsSet = Set<String>()
+        let currentDict: [String] = Array()
         
-        UserDefaults.standard.register(defaults: [
-            "GameCount": 0,
-            "History": resultArray,
-            "Words": pastWords
-            ])
+//        let encodedData = NSKeyedArchiver.archivedData(withRootObject: pastWords, requiringSecureCoding: false)
+
+        
+//        UserDefaults.standard.register(defaults: [
+//            "History": resultArray,
+//            "WordsUsed": encodedData,
+//            "lastDifficulty": 5,
+//            "lastDictionary": currentDict
+//            ])
+        
+        UserDefaults.standard.set(5, forKey: "lastDifficulty")
+        UserDefaults.standard.set(historyArray, forKey: "History")
+        UserDefaults.standard.set(currentDict, forKey: "lastDictionary")
+//        UserDefaults.standard.set(usedWordsSet, forKey: "usedWordsSet")
+        UserDefaults.standard.set(try? PropertyListEncoder().encode(usedWordsSet), forKey:"usedWordsSet")
+
+
+        
+        
+
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let nav1 = UINavigationController()

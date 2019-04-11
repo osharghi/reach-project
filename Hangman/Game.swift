@@ -15,7 +15,8 @@ class Game
     var displayWord: String?
     var lettersLeft: Int?
     var charDict: [String: [Int]] = Dictionary()
-    var guesses = Set<String>()
+    var guessSet = Set<String>()
+    var guessArr: [String] = Array()
     
     init(word: String)
     {
@@ -62,37 +63,51 @@ class Game
         {
             if(charDict[guess_low] != nil)
             {
-                if(guesses.contains(guess_low))
+                if(guessSet.contains(guess_low))
                 {
                     //Letter already successfully guessed
-                    return "You have already guessed this letter"
+                    return "You have already guessed this."
                 }
                 else
                 {
-                    guesses.insert(guess_low)
+                    guessSet.insert(guess_low)
+                    guessArr.append(guess_low)
                     let letterCount = charDict[guess_low]!.count
                     lettersLeft = lettersLeft! - letterCount
+                    print(lettersLeft!)
                     updateDisplayWord(letter: guess_low)
                     return "Guess correct!"
                 }
             }
             else
             {
-                guesses.insert(guess_low)
-                tryCount = tryCount - 1
-                return "Incorrect guess!"
+                if(guessSet.contains(guess_low))
+                {
+                    return "You have already guessed this."
+                }
+                else
+                {
+                    guessSet.insert(guess_low)
+                    guessArr.append(guess_low)
+                    tryCount = tryCount - 1
+                    return "Incorrect guess!"
+                }
             }
         }
         else
         {
             if(guess_low == word)
             {
+                guessSet.insert(guess_low)
+                guessArr.append(guess_low)
                 displayWord = word
                 lettersLeft = 0
                 return "You win!"
             }
             else
             {
+                guessSet.insert(guess_low)
+                guessArr.append(guess_low)
                 tryCount = tryCount - 1
                 return "Incorrect guess!"
             }
@@ -110,7 +125,7 @@ class Game
         {
             if(char == "_")
             {
-                if(index == indices[i])
+                if(i<indices.count && index == indices[i])
                 {
                     buildWord = buildWord + String(letter)
                     i = i + 1

@@ -17,7 +17,6 @@ class GameController: UIViewController, UITextFieldDelegate {
     var gameWordLabel = UILabel()
     var messageLabel = UILabel()
     var game : Game?
-
     
     override func viewWillAppear(_ animated: Bool) {
         
@@ -28,7 +27,7 @@ class GameController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         setUpBackButton()
         setUpTextField()
-        game = Game(word: "sample")
+        game = Game(word: "sampleas")
 
         // Do any additional setup after loading the view.
     }
@@ -53,6 +52,8 @@ class GameController: UIViewController, UITextFieldDelegate {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.autocorrectionType = .no
         textField.textAlignment = .center
+        textField.autocapitalizationType = .none
+
         
         NSLayoutConstraint.activate([
             
@@ -173,53 +174,66 @@ class GameController: UIViewController, UITextFieldDelegate {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             keyboardHeight = keyboardRectangle.height
-            print(keyboardHeight)
         }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("return pressed")
         checkInput()
         return false
     }
     
     func checkInput()
     {
-        if(textField.text?.count == 1)
+        if(textField.text?.count == 1 || textField.text?.count == game?.word?.count)
         {
             messageLabel.text = game?.guess(guess: textField.text!)
             updateGameWordLabel()
             updateTryCountLabel()
             updateGuessesListLabel()
-        }
-        else if(textField.text?.count == game?.word?.count)
-        {
-            messageLabel.text = game?.guess(guess: textField.text!)
-            updateGameWordLabel()
-            updateTryCountLabel()
-            updateGuessesListLabel()
+            checkGameState()
         }
         else
         {
             messageLabel.text = "Guess needs to be either one letter or entire word."
         }
+        
+        textField.text = ""
+
     }
     
     func updateTryCountLabel()
     {
         let count = game?.tryCount
-        tryCountLabel.text = String(count!)
+        tryCountLabel.text = "Tries: " + String(count!)
     }
     
     func updateGuessesListLabel()
     {
-        guessesListLabel.text = "Guesses: "
-        for string in game!.guesses
+        let list = game!.guessArr.joined(separator: ", ")
+        guessesListLabel.text = "Guesses: " + list
+    }
+    
+    func checkGameState()
+    {
+        if(game?.lettersLeft! == 0)
         {
-            guessesListLabel.text = guessesListLabel.text! + string
+            //gameWon
+            let emitter = CAEmitterLayer()
+            emitter.emitterPosition = CGPoint(x: self.view.frame.size.width / 2, y: -10)
+            emitter.emitterShape = CAEmitterLayerEmitterShape.line
+            emitter.emitterSize = CGSize(width: self.view.frame.size.width, height: 2.0)
+            emitter.emitterCells = generateEmitterCells()
+            self.view.layer.addSublayer(emitter)
+        }
+        else if(game?.tryCount == 0)
+        {
+            messageLabel.text = "You Lose! :("
+
+            //game Lost
         }
     }
-
+    
+    
     /*
     // MARK: - Navigation
 
