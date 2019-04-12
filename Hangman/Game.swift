@@ -106,10 +106,17 @@ class Game
             }
             else
             {
-                guessSet.insert(guess_low)
-                guessArr.append(guess_low)
-                tryCount = tryCount - 1
-                return "Incorrect guess!"
+                if(guessSet.contains(guess_low))
+                {
+                    return "You have already guessed this."
+                }
+                else
+                {
+                    guessSet.insert(guess_low)
+                    guessArr.append(guess_low)
+                    tryCount = tryCount - 1
+                    return "Incorrect guess!"
+                }
             }
         }
     }

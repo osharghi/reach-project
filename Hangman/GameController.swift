@@ -143,22 +143,19 @@ class GameController: UIViewController, UITextFieldDelegate {
         self.view.addSubview(guessesListLabel)
         guessesListLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        guessesListLabel.numberOfLines = 2
+        guessesListLabel.adjustsFontSizeToFitWidth = true
+        guessesListLabel.minimumScaleFactor = 0.1
+        
+        
         let botAnchor = guessesListLabel.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
         let leftAnchor = guessesListLabel.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 5)
+        let widthAnchor = guessesListLabel.widthAnchor.constraint(equalToConstant: self.view.bounds.width-5)
+
         
-        NSLayoutConstraint.activate([botAnchor, leftAnchor])
+        NSLayoutConstraint.activate([botAnchor, leftAnchor, widthAnchor])
         guessesListAnchor = botAnchor
         guessesListAnchor?.isActive = true
-
-//
-//        NSLayoutConstraint.activate([
-//
-//            guessesListLabel.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 5),
-//            var botAnchor = guessesListLabel.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -10)
-////            guessesListLabel.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight-20)
-////            guessesListAnchor = guessesListLabel.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -10)
-//
-//            ])
     }
     
     func setUpTryCountLabel()
@@ -253,16 +250,4 @@ class GameController: UIViewController, UITextFieldDelegate {
             messageLabel.font = UIFont.boldSystemFont(ofSize: 18)
         }
     }
-    
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
