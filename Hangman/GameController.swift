@@ -18,6 +18,8 @@ class GameController: UIViewController, UITextFieldDelegate {
     var messageLabel = UILabel()
     var game : Game?
     let bottomLine = CALayer()
+    var guessesListAnchor : NSLayoutConstraint?
+
     
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -56,7 +58,6 @@ class GameController: UIViewController, UITextFieldDelegate {
         textField.autocorrectionType = .no
         textField.textAlignment = .center
         textField.autocapitalizationType = .none
-
         
         NSLayoutConstraint.activate([
             
@@ -64,7 +65,6 @@ class GameController: UIViewController, UITextFieldDelegate {
             textField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             textField.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -40)
             ])
-        
         
         textField.becomeFirstResponder()
         self.textField.delegate = self
@@ -143,11 +143,22 @@ class GameController: UIViewController, UITextFieldDelegate {
         self.view.addSubview(guessesListLabel)
         guessesListLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        NSLayoutConstraint.activate([
-            
-            guessesListLabel.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 5),
-            guessesListLabel.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight-20)
-            ])
+        let botAnchor = guessesListLabel.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
+        let leftAnchor = guessesListLabel.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 5)
+        
+        NSLayoutConstraint.activate([botAnchor, leftAnchor])
+        guessesListAnchor = botAnchor
+        guessesListAnchor?.isActive = true
+
+//
+//        NSLayoutConstraint.activate([
+//
+//            guessesListLabel.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 5),
+//            var botAnchor = guessesListLabel.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -10)
+////            guessesListLabel.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight-20)
+////            guessesListAnchor = guessesListLabel.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -10)
+//
+//            ])
     }
     
     func setUpTryCountLabel()
@@ -175,6 +186,8 @@ class GameController: UIViewController, UITextFieldDelegate {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             keyboardHeight = keyboardRectangle.height
+            print(keyboardHeight)
+            guessesListAnchor?.constant = -keyboardHeight
         }
     }
     
@@ -238,8 +251,6 @@ class GameController: UIViewController, UITextFieldDelegate {
         {
             messageLabel.text = "You Lose! :("
             messageLabel.font = UIFont.boldSystemFont(ofSize: 18)
-
-            //game Lost
         }
     }
     

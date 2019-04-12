@@ -17,9 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         let historyArray : [History] = Array()
-        let usedWordsSet = Set<String>()
+//        let usedWordsSet = Set<String>()
         let wordDict: [String] = Array()
-        
         
         UserDefaults.standard.register(defaults: ["lastDifficulty": 5, "History": historyArray, "lastDictionary": wordDict])
         
