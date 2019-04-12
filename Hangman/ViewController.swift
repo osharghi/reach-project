@@ -27,6 +27,7 @@ class ViewController: UIViewController {
         setUpRightButton()
         setUpLeftButton()
         setUpErrorLabel()
+        setUpInstructions()
     }
     
     func setUpSlider(value: Int)
@@ -51,7 +52,16 @@ class ViewController: UIViewController {
     func setUpInstructions()
     {
         let instructionsLabel = UILabel()
-        instructionsLabel.text = "Choose difficult below"
+
+        
+        let attr = NSMutableAttributedString(string: "Select difficulty:\n0 = Easy  |  10 = Hard")
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 5
+        attr.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attr.length))
+        instructionsLabel.attributedText = attr;
+        
+        instructionsLabel.numberOfLines = 2
+        instructionsLabel.textAlignment = .center
         
         self.view.addSubview(instructionsLabel)
         instructionsLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -59,7 +69,7 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate([
 
             instructionsLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            instructionsLabel.centerYAnchor.constraint(equalTo: self.slider.centerYAnchor, constant: -50)
+            instructionsLabel.centerYAnchor.constraint(equalTo: self.slider.centerYAnchor, constant: -60)
             ])
     }
 

@@ -25,8 +25,6 @@ class GameController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        game = Game(word: "sampleas")
-
         // Do any additional setup after loading the view.
     }
     
@@ -187,22 +185,26 @@ class GameController: UIViewController, UITextFieldDelegate {
     
     func checkInput()
     {
-        if(textField.text?.count == 1 || textField.text?.count == game?.word?.count)
-        {
-            messageLabel.text = game?.guess(guess: textField.text!)
-            updateGameWordLabel()
-            updateTryCountLabel()
-            updateGuessesListLabel()
-            checkGameState()
+        let regex = try! NSRegularExpression(pattern: ".*[^A-Za-z ].*", options: [])
+        if regex.firstMatch(in: textField.text!, options: [], range: NSMakeRange(0, textField.text!.count)) != nil {
+            messageLabel.text = "Guess can only consist of letters."
         }
         else
         {
-            messageLabel.text = "Guess needs to be either one letter or entire word."
-
+            if(textField.text?.count == 1 || textField.text?.count == game?.word?.count)
+            {
+                messageLabel.text = game?.guess(guess: textField.text!)
+                updateGameWordLabel()
+                updateTryCountLabel()
+                updateGuessesListLabel()
+                checkGameState()
+            }
+            else
+            {
+                messageLabel.text = "Guess one letter or entire word."
+            }
         }
-        
         textField.text = ""
-
     }
     
     func updateTryCountLabel()
@@ -236,7 +238,6 @@ class GameController: UIViewController, UITextFieldDelegate {
         {
             messageLabel.text = "You Lose! :("
             messageLabel.font = UIFont.boldSystemFont(ofSize: 18)
-
 
             //game Lost
         }
