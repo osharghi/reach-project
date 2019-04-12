@@ -17,6 +17,7 @@ class GameController: UIViewController, UITextFieldDelegate {
     var gameWordLabel = UILabel()
     var messageLabel = UILabel()
     var game : Game?
+    let bottomLine = CALayer()
     
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -37,6 +38,12 @@ class GameController: UIViewController, UITextFieldDelegate {
         setUpGameWordLabel()
         setUpMessageLabel()
         drawUnderLine()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        bottomLine.frame = CGRect(x: textField.bounds.origin.x, y:
+            textField.bounds.origin.y + textField.bounds.size.height + 2, width:
+            self.view.bounds.width - 100, height: 1.0)
     }
     
     func setUpBackButton()
@@ -125,28 +132,9 @@ class GameController: UIViewController, UITextFieldDelegate {
     
     func drawUnderLine()
     {
-        
-        let line = UIView()
-        line.backgroundColor = .black
-        
-        self.view.addSubview(line)
-        line.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            
-            line.heightAnchor.constraint(equalToConstant: 1),
-            line.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 100),
-            line.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            line.topAnchor.constraint(equalTo: self.textField.bottomAnchor, constant: 2)
-            ])
-        
-//        let bottomLine = CALayer()
-//        print("height")
-//        print(textField.bounds.size.height)
-//        bottomLine.frame = CGRect(x: textField.bounds.origin.x, y: textField.bounds.origin.y + textField.bounds.size.height + 2, width: self.view.bounds.width - 100, height: 1.0)
-//        bottomLine.backgroundColor = UIColor.black.cgColor
-//        textField.borderStyle = UITextField.BorderStyle.none
-//        textField.layer.addSublayer(bottomLine)
+        bottomLine.backgroundColor = UIColor.black.cgColor
+        textField.borderStyle = UITextField.BorderStyle.none
+        textField.layer.addSublayer(bottomLine)
     }
     
     func setUpGuessListLabel()

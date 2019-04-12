@@ -164,8 +164,6 @@ class ViewController: UIViewController {
     {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Play", style: .done, target: self, action: #selector(playTapped))
         rightButton = self.navigationItem.rightBarButtonItem
-        
-
     }
     
     func setUpLeftButton()
