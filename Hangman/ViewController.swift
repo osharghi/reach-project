@@ -117,7 +117,7 @@ class ViewController: UIViewController {
             
             errorLabel.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 100),
             errorLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            errorLabel.centerYAnchor.constraint(equalTo: self.slider.centerYAnchor, constant: 20)
+            errorLabel.centerYAnchor.constraint(equalTo: self.difficultyLabel.centerYAnchor, constant: 30)
             ])
     }
     
@@ -136,8 +136,6 @@ class ViewController: UIViewController {
             
             guard error == nil else {
                 print("error calling GET")
-                print(error!)
-                
                 DispatchQueue.main.async {
                     self.updateErrorLabel(requestSuccessful: false)
                     spinner.stopAnimating()
@@ -147,7 +145,9 @@ class ViewController: UIViewController {
             }
             
             guard let data = data else { return }
-            print(String(data: data, encoding: .utf8)!)
+//            print(String(data: data, encoding: .utf8)!)
+            let dict = String(data: data, encoding: .utf8)!.components(separatedBy: .newlines)
+            self.words = dict
             
             DispatchQueue.main.async {
                 self.updateErrorLabel(requestSuccessful: true)
@@ -210,17 +210,33 @@ class ViewController: UIViewController {
     
     func requesetDone()
     {
+        //Pick random word and check if its in used word set
+        //Add to set
+        //Create game object and pass to view controller
+        //Maybe create a word array of used words so that when all words used you can just start from index 0 and reuse
+        let r: Int = getRandom()
+        let game = Game(word:words![r])
+        print(words![r])
         rightButton?.isEnabled = true
         self.updateDefaults()
         let gameVC = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "GameController") as? GameController
+        gameVC?.game=game
         self.navigationController?.pushViewController(gameVC!, animated: true)
+    }
+    
+    func getRandom() ->Int
+    {
+        let number = Int.random(in: 0..<words!.count)
+        return number
     }
     
     func updateErrorLabel(requestSuccessful: Bool)
     {
-        if(requestSuccessful)
+        if(!requestSuccessful)
         {
             self.errorLabel.text = "Unable to get word list. Check network connection."
+            errorLabel.font = errorLabel.font.withSize(14.0)
+
         }
         else
         {

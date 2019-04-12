@@ -19,26 +19,24 @@ class GameController: UIViewController, UITextFieldDelegate {
     var game : Game?
     
     override func viewWillAppear(_ animated: Bool) {
-        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpBackButton()
-        setUpTextField()
-        game = Game(word: "sampleas")
+//        game = Game(word: "sampleas")
 
         // Do any additional setup after loading the view.
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        setUpTextField()
+        setUpBackButton()
         setUpGuessListLabel()
-        drawUnderLine()
         setUpTryCountLabel()
         setUpGameWordLabel()
         setUpMessageLabel()
-
+        drawUnderLine()
     }
     
     func setUpBackButton()
@@ -127,11 +125,28 @@ class GameController: UIViewController, UITextFieldDelegate {
     
     func drawUnderLine()
     {
-        let bottomLine = CALayer()
-        bottomLine.frame = CGRect(x: textField.bounds.origin.x, y: textField.bounds.origin.y + textField.bounds.size.height + 2, width: self.view.bounds.width - 100, height: 1.0)
-        bottomLine.backgroundColor = UIColor.black.cgColor
-        textField.borderStyle = UITextField.BorderStyle.none
-        textField.layer.addSublayer(bottomLine)
+        
+        let line = UIView()
+        line.backgroundColor = .black
+        
+        self.view.addSubview(line)
+        line.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            
+            line.heightAnchor.constraint(equalToConstant: 1),
+            line.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 100),
+            line.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            line.topAnchor.constraint(equalTo: self.textField.bottomAnchor, constant: 2)
+            ])
+        
+//        let bottomLine = CALayer()
+//        print("height")
+//        print(textField.bounds.size.height)
+//        bottomLine.frame = CGRect(x: textField.bounds.origin.x, y: textField.bounds.origin.y + textField.bounds.size.height + 2, width: self.view.bounds.width - 100, height: 1.0)
+//        bottomLine.backgroundColor = UIColor.black.cgColor
+//        textField.borderStyle = UITextField.BorderStyle.none
+//        textField.layer.addSublayer(bottomLine)
     }
     
     func setUpGuessListLabel()
@@ -195,6 +210,7 @@ class GameController: UIViewController, UITextFieldDelegate {
         else
         {
             messageLabel.text = "Guess needs to be either one letter or entire word."
+
         }
         
         textField.text = ""
@@ -218,6 +234,9 @@ class GameController: UIViewController, UITextFieldDelegate {
         if(game?.lettersLeft! == 0)
         {
             //gameWon
+            messageLabel.text = "You Win! :)"
+            messageLabel.font = UIFont.boldSystemFont(ofSize: 18)
+
             let emitter = CAEmitterLayer()
             emitter.emitterPosition = CGPoint(x: self.view.frame.size.width / 2, y: -10)
             emitter.emitterShape = CAEmitterLayerEmitterShape.line
@@ -228,6 +247,8 @@ class GameController: UIViewController, UITextFieldDelegate {
         else if(game?.tryCount == 0)
         {
             messageLabel.text = "You Lose! :("
+            messageLabel.font = UIFont.boldSystemFont(ofSize: 18)
+
 
             //game Lost
         }
