@@ -27,12 +27,13 @@ class GameController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpBackButton()
+
         // Do any additional setup after loading the view.
     }
     
     override func viewDidAppear(_ animated: Bool) {
         setUpTextField()
-        setUpBackButton()
         setUpGuessListLabel()
         setUpTryCountLabel()
         setUpGameWordLabel()
@@ -48,7 +49,7 @@ class GameController: UIViewController, UITextFieldDelegate {
     
     func setUpBackButton()
     {
-         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Quit", style: .done, target: self, action: #selector(backTapped))
+         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Main Menu", style: .done, target: self, action: #selector(backTapped))
     }
     
     func setUpTextField()
@@ -173,10 +174,29 @@ class GameController: UIViewController, UITextFieldDelegate {
             ])
     }
 
-    
     @ objc func backTapped()
     {
-        self.navigationController?.popViewController(animated: true)
+        if(game?.lettersLeft! == 0 || game?.tryCount == 0)
+        {
+            self.navigationController?.popViewController(animated: true)
+        }
+        else
+        {
+            let alertController = UIAlertController(title: "End Game?", message: "Are you sure you want to end this game?", preferredStyle: .alert)
+
+            let action1 = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction) in
+                print("You've pressed cancel");
+            }
+            let action2 = UIAlertAction(title: "Quit", style: .destructive) { (action:UIAlertAction) in
+                print("You've pressed Quit");
+                self.navigationController?.popViewController(animated: true)
+
+            }
+            
+            alertController.addAction(action1)
+            alertController.addAction(action2)
+            self.present(alertController, animated: true, completion: nil)
+        }
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
