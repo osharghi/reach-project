@@ -19,7 +19,6 @@ class GameController: UIViewController, UITextFieldDelegate {
     var game : Game?
     let bottomLine = CALayer()
     var guessesListAnchor : NSLayoutConstraint?
-
     
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -182,13 +181,14 @@ class GameController: UIViewController, UITextFieldDelegate {
         }
         else
         {
-            let alertController = UIAlertController(title: "End Game?", message: "Are you sure you want to end this game?", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "End Game?", message: "Are you sure you want to end the game?", preferredStyle: .alert)
 
             let action1 = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction) in
-                print("You've pressed cancel");
+                print("You've pressed cancel")
             }
             let action2 = UIAlertAction(title: "Quit", style: .destructive) { (action:UIAlertAction) in
-                print("You've pressed Quit");
+                print("You've pressed Quit")
+                self.recordHistory(status: GameStatus.quit)
                 self.navigationController?.popViewController(animated: true)
 
             }
@@ -256,7 +256,7 @@ class GameController: UIViewController, UITextFieldDelegate {
             //gameWon
             messageLabel.text = "You Win! :)"
             messageLabel.font = UIFont.boldSystemFont(ofSize: 18)
-
+            recordHistory(status: GameStatus.win)
             let emitter = CAEmitterLayer()
             emitter.emitterPosition = CGPoint(x: self.view.frame.size.width / 2, y: -10)
             emitter.emitterShape = CAEmitterLayerEmitterShape.line
@@ -268,6 +268,49 @@ class GameController: UIViewController, UITextFieldDelegate {
         {
             messageLabel.text = "You Lose! :("
             messageLabel.font = UIFont.boldSystemFont(ofSize: 18)
+            recordHistory(status: GameStatus.loss)
+            game?.updateDisplayWordLost()
+            updateGameWordLabel()
+        }
+    }
+    
+    func recordHistory(status: GameStatus)
+    {
+        let currentDateTime = Date()
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        formatter.dateStyle = .short
+        let dateString = formatter.string(from: currentDateTime)
+        
+        var gameStatus = ""
+        if(status == GameStatus.win)
+        {
+            gameStatus = "Won"
+        }
+        else if(status == GameStatus.loss)
+        {
+            gameStatus = "Lost"
+        }
+        else
+        {
+            gameStatus = "Quit"
+        }
+        
+        let history = History(date: dateString, status: gameStatus)
+        
+        if let data = UserDefaults.standard.data(forKey: "History")
+        {
+            var historyList = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? [History]
+            historyList!.append(history)
+            let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: historyList!, requiringSecureCoding: false)
+            UserDefaults.standard.set(encodedData, forKey: "History")
+        }
+        else
+        {
+            var historyArr : [History] = Array()
+            historyArr.append(history)
+            let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: historyArr, requiringSecureCoding: false)
+            UserDefaults.standard.set(encodedData, forKey: "History")
         }
     }
 }

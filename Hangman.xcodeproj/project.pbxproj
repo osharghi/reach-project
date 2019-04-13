@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F683E9C2261726E008980FF /* HistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F683E9B2261726E008980FF /* HistoryController.swift */; };
 		4F77A3F5225D65A700258066 /* GameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F77A3F4225D65A700258066 /* GameController.swift */; };
 		4FB5387F225C19AC00B193A7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB5387E225C19AC00B193A7 /* AppDelegate.swift */; };
 		4FB53881225C19AC00B193A7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB53880225C19AC00B193A7 /* ViewController.swift */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4F683E9B2261726E008980FF /* HistoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryController.swift; sourceTree = "<group>"; };
 		4F77A3F4225D65A700258066 /* GameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameController.swift; sourceTree = "<group>"; };
 		4FB5387B225C19AC00B193A7 /* Hangman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hangman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FB5387E225C19AC00B193A7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				4FB5387E225C19AC00B193A7 /* AppDelegate.swift */,
 				4FB53880225C19AC00B193A7 /* ViewController.swift */,
 				4F77A3F4225D65A700258066 /* GameController.swift */,
+				4F683E9B2261726E008980FF /* HistoryController.swift */,
 				4FB53890225C216800B193A7 /* History.swift */,
 				4FB53892225C238A00B193A7 /* Game.swift */,
 				4FE75DC6225FA91300A9371B /* Emitter.swift */,
@@ -150,6 +153,7 @@
 				4FB53891225C216800B193A7 /* History.swift in Sources */,
 				4F77A3F5225D65A700258066 /* GameController.swift in Sources */,
 				4FE75DC7225FA91300A9371B /* Emitter.swift in Sources */,
+				4F683E9C2261726E008980FF /* HistoryController.swift in Sources */,
 				4FB53881225C19AC00B193A7 /* ViewController.swift in Sources */,
 				4FB5387F225C19AC00B193A7 /* AppDelegate.swift in Sources */,
 				4FB53893225C238A00B193A7 /* Game.swift in Sources */,

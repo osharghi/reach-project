@@ -28,6 +28,8 @@ class ViewController: UIViewController {
         setUpLeftButton()
         setUpErrorLabel()
         setUpInstructions()
+        
+        
     }
     
     func setUpSlider(value: Int)
@@ -54,7 +56,7 @@ class ViewController: UIViewController {
         let instructionsLabel = UILabel()
 
         
-        let attr = NSMutableAttributedString(string: "Select difficulty:\n0 = Easy  |  10 = Hard")
+        let attr = NSMutableAttributedString(string: "Select difficulty:\n1 = Easy  |  10 = Hard")
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 5
         attr.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attr.length))
@@ -254,7 +256,8 @@ class ViewController: UIViewController {
     
     @objc func historyTapped()
     {
-        print("HISTORY")
+        let historyVC = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "HistoryController") as? HistoryController
+        self.navigationController?.pushViewController(historyVC!, animated: true)
     }
     
 

@@ -123,11 +123,12 @@ class Game
     
     func updateDisplayWord(letter: String)
     {
+        
         var indices = charDict[letter]!
         var buildWord = ""
-        
+    
         var  i = 0;
-        
+    
         for (index, char) in displayWord!.enumerated()
         {
             if(char == "_")
@@ -147,8 +148,13 @@ class Game
                 buildWord = buildWord + String(char)
             }
         }
-        
+    
         displayWord = buildWord
+    }
+    
+    func updateDisplayWordLost()
+    {
+        displayWord = word!
     }
     
 }

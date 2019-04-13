@@ -17,16 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         let historyArray : [History] = Array()
-//        let usedWordsSet = Set<String>()
         let wordDict: [String] = Array()
         
         UserDefaults.standard.register(defaults: ["lastDifficulty": 5, "History": historyArray, "lastDictionary": wordDict])
-        
-//        UserDefaults.standard.set(5, forKey: "lastDifficulty")
-//        UserDefaults.standard.set(historyArray, forKey: "History")
-//        UserDefaults.standard.set(wordDict, forKey: "lastDictionary")
-//        UserDefaults.standard.set(try? PropertyListEncoder().encode(usedWordsSet), forKey:"usedWordsSet")
-
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let nav1 = UINavigationController()
