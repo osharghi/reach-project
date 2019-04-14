@@ -19,6 +19,7 @@ class GameController: UIViewController, UITextFieldDelegate {
     var game : Game?
     let bottomLine = CALayer()
     var guessesListAnchor : NSLayoutConstraint?
+    var keyboardDisabled = false
     
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -26,13 +27,13 @@ class GameController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpTextField()
         setUpBackButton()
 
         // Do any additional setup after loading the view.
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        setUpTextField()
         setUpGuessListLabel()
         setUpTryCountLabel()
         setUpGameWordLabel()
@@ -67,7 +68,7 @@ class GameController: UIViewController, UITextFieldDelegate {
             ])
         
         textField.becomeFirstResponder()
-        self.textField.delegate = self
+        textField.delegate = self
     }
     
     func setUpGameWordLabel()
@@ -195,7 +196,13 @@ class GameController: UIViewController, UITextFieldDelegate {
             
             alertController.addAction(action1)
             alertController.addAction(action2)
-            self.present(alertController, animated: true, completion: nil)
+            
+            
+            let rootViewController: UIViewController =
+                UIApplication.shared.windows.last!.rootViewController!
+            rootViewController.present(alertController, animated: true, completion: nil)
+            
+//            self.present(alertController, animated: true, completion: nil)
         }
     }
     
@@ -215,6 +222,12 @@ class GameController: UIViewController, UITextFieldDelegate {
     
     func checkInput()
     {
+        if(keyboardDisabled)
+        {
+            textField.text = ""
+            return
+        }
+        
         let regex = try! NSRegularExpression(pattern: ".*[^A-Za-z ].*", options: [])
         if regex.firstMatch(in: textField.text!, options: [], range: NSMakeRange(0, textField.text!.count)) != nil {
             messageLabel.text = "Guess can only consist of letters."
@@ -254,9 +267,11 @@ class GameController: UIViewController, UITextFieldDelegate {
         if(game?.lettersLeft! == 0)
         {
             //gameWon
+            keyboardDisabled = true
             messageLabel.text = "You Win! :)"
             messageLabel.font = UIFont.boldSystemFont(ofSize: 18)
             recordHistory(status: GameStatus.win)
+
             let emitter = CAEmitterLayer()
             emitter.emitterPosition = CGPoint(x: self.view.frame.size.width / 2, y: -10)
             emitter.emitterShape = CAEmitterLayerEmitterShape.line
@@ -266,6 +281,7 @@ class GameController: UIViewController, UITextFieldDelegate {
         }
         else if(game?.tryCount == 0)
         {
+            keyboardDisabled = true
             messageLabel.text = "You Lose! :("
             messageLabel.font = UIFont.boldSystemFont(ofSize: 18)
             recordHistory(status: GameStatus.loss)
@@ -313,4 +329,5 @@ class GameController: UIViewController, UITextFieldDelegate {
             UserDefaults.standard.set(encodedData, forKey: "History")
         }
     }
+
 }

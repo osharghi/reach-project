@@ -29,7 +29,6 @@ class ViewController: UIViewController {
         setUpErrorLabel()
         setUpInstructions()
         
-        
     }
     
     func setUpSlider(value: Int)
