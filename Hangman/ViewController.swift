@@ -135,7 +135,6 @@ class ViewController: UIViewController {
     func makeRequest()
     {
         let spinner = setUpSpinner()
-        var dict : [String] = Array()
         var url = URLComponents(string: "http://app.linkedin-reach.io/words")!
         let value = Int(slider.value)
         
@@ -151,19 +150,35 @@ class ViewController: UIViewController {
                     self.updateErrorLabel(requestSuccessful: false)
                     spinner.stopAnimating()
                 }
-                
                 return
             }
             
-            guard let data = data else { return }
-//            print(String(data: data, encoding: .utf8)!)
+            guard let data = data else {
+                
+                DispatchQueue.main.async {
+                    self.updateErrorLabel(requestSuccessful: false)
+                    spinner.stopAnimating()
+                }
+                return
+            }
+            
             let dict = String(data: data, encoding: .utf8)!.components(separatedBy: .newlines)
             self.words = dict
             
-            DispatchQueue.main.async {
-                self.updateErrorLabel(requestSuccessful: true)
-                spinner.stopAnimating()
-                self.requesetDone()
+            if(self.words != nil)
+            {
+                if(self.words!.count < 2)
+                {
+                    self.updateErrorLabel(requestSuccessful: false)
+                    spinner.stopAnimating()
+                    return
+                }
+            
+                DispatchQueue.main.async {
+                    self.updateErrorLabel(requestSuccessful: true)
+                    spinner.stopAnimating()
+                    self.requesetDone()
+                }
             }
         }
         
@@ -194,10 +209,10 @@ class ViewController: UIViewController {
     {
         rightButton?.isEnabled = false
         
-        let lastDifficulty = defaults.object(forKey:"lastDifficulty") as! Int
+        let lastDifficulty = defaults.object(forKey:"lastDifficulty") as? Int ?? 5
         let currentDifficulty = Int(slider.value)
         
-        let previousDictionary = defaults.object(forKey:"lastDictionary") as! [String]
+        let previousDictionary = defaults.object(forKey:"lastDictionary") as? [String]
 
         if(lastDifficulty != currentDifficulty) //Need to update dictionary
         {
@@ -205,37 +220,57 @@ class ViewController: UIViewController {
         }
         else
         {
-            if(previousDictionary.isEmpty)
+            if let priorDictionary = previousDictionary
             {
-                makeRequest() //Get new dictionary
+                if(priorDictionary.isEmpty)
+                {
+                     makeRequest() //Get new dictionary
+                }
+                else
+                {
+                    words = previousDictionary
+                    self.requesetDone()
+
+                }
             }
             else
             {
-                words = previousDictionary // Nil check?
-                self.requesetDone()  //Use previously stored dictionary. Go to game.
+                makeRequest()
             }
         }
     }
     
     func requesetDone()
     {
-        //Pick random word and check if its in used word set
-        //Add to set
-        //Create game object and pass to view controller
-        //Maybe create a word array of used words so that when all words used you can just start from index 0 and reuse
-        let r: Int = getRandom()
-        let game = Game(word:words![r])
-        print(words![r])
-        rightButton?.isEnabled = true
-        self.updateDefaults()
-        let gameVC = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "GameController") as? GameController
-        gameVC?.game=game
-        self.navigationController?.pushViewController(gameVC!, animated: true)
+        if let wordList = words
+        {
+            if(wordList.count > 0)
+            {
+                let r: Int = getRandom(words: wordList)
+                print(wordList[r])
+                let game = Game(word:wordList[r])
+                rightButton?.isEnabled = true
+                self.updateDefaults()
+                let gameVC = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "GameController") as? GameController
+                gameVC?.game=game
+                self.navigationController?.pushViewController(gameVC!, animated: true)
+            }
+            else
+            {
+                updateErrorLabel(requestSuccessful: false)
+            }
+        }
+        else
+        {
+            updateErrorLabel(requestSuccessful: false)
+        }
+        
+        
     }
     
-    func getRandom() ->Int
+    func getRandom(words: [String]) ->Int
     {
-        let number = Int.random(in: 0..<words!.count)
+        let number = Int.random(in: 0..<words.count)
         return number
     }
     
