@@ -240,6 +240,7 @@ class GameController: UIViewController, UITextFieldDelegate {
                 updateGameWordLabel()
                 updateTryCountLabel()
                 updateGuessesListLabel()
+                drawShape()
                 checkGameState()
             }
             else
@@ -327,6 +328,104 @@ class GameController: UIViewController, UITextFieldDelegate {
             historyArr.append(history)
             let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: historyArr, requiringSecureCoding: false)
             UserDefaults.standard.set(encodedData, forKey: "History")
+        }
+    }
+    
+    func drawShape()
+    {
+        let navHeight = UIApplication.shared.statusBarFrame.size.height + (self.navigationController?.navigationBar.frame.height ?? 0.0)
+        let r : CGFloat = 5
+        let x : CGFloat = self.view.frame.size.width - 25
+        let y : CGFloat = self.view.frame.origin.y + navHeight + 20
+        
+        if(messageLabel.text == "Incorrect guess!")
+        {
+            if(game!.tryCount == 5)
+            {
+                let circlePath = UIBezierPath(arcCenter: CGPoint(x: x,y: y), radius: r, startAngle: CGFloat(0), endAngle:CGFloat(Double.pi * 2), clockwise: true)
+                
+                let shapeLayer = CAShapeLayer()
+                shapeLayer.path = circlePath.cgPath
+                shapeLayer.fillColor = UIColor.clear.cgColor
+                shapeLayer.strokeColor = UIColor.black.cgColor
+                shapeLayer.lineWidth = 2.0
+                
+                view.layer.addSublayer(shapeLayer)
+            }
+            else if(game!.tryCount == 4)
+            {
+                let aPath = UIBezierPath()
+                aPath.move(to: CGPoint(x:x, y:y + r))
+                aPath.addLine(to: CGPoint(x:x, y: y + 20 + r))
+                aPath.close()
+    
+                let shapeLayer = CAShapeLayer()
+                shapeLayer.path = aPath.cgPath
+                shapeLayer.fillColor = UIColor.black.cgColor
+                shapeLayer.strokeColor = UIColor.black.cgColor
+                shapeLayer.lineWidth = 2.0
+                view.layer.addSublayer(shapeLayer)
+            
+            }
+            else if(game!.tryCount == 3)
+            {
+                let aPath = UIBezierPath()
+                aPath.move(to: CGPoint(x:x, y: y + 7 + r))
+                aPath.addLine(to: CGPoint(x:x - 10, y: y + 12 + r))
+                aPath.close()
+                
+                let shapeLayer = CAShapeLayer()
+                shapeLayer.path = aPath.cgPath
+                shapeLayer.fillColor = UIColor.black.cgColor
+                shapeLayer.strokeColor = UIColor.black.cgColor
+                shapeLayer.lineWidth = 2.0
+                view.layer.addSublayer(shapeLayer)
+                
+            }
+            else if(game!.tryCount == 2)
+            {
+                let aPath = UIBezierPath()
+                aPath.move(to: CGPoint(x:x, y: y + 7 + r))
+                aPath.addLine(to: CGPoint(x:x + 10, y: y + 12 + r))
+                aPath.close()
+                
+                let shapeLayer = CAShapeLayer()
+                shapeLayer.path = aPath.cgPath
+                shapeLayer.fillColor = UIColor.black.cgColor
+                shapeLayer.strokeColor = UIColor.black.cgColor
+                shapeLayer.lineWidth = 2.0
+                view.layer.addSublayer(shapeLayer)
+                
+            }
+            else if(game!.tryCount == 1)
+            {
+                let aPath = UIBezierPath()
+                aPath.move(to: CGPoint(x:x, y: y + 20 + r))
+                aPath.addLine(to: CGPoint(x:x - 5, y: y + 27 + r))
+                aPath.close()
+                
+                let shapeLayer = CAShapeLayer()
+                shapeLayer.path = aPath.cgPath
+                shapeLayer.fillColor = UIColor.black.cgColor
+                shapeLayer.strokeColor = UIColor.black.cgColor
+                shapeLayer.lineWidth = 2.0
+                view.layer.addSublayer(shapeLayer)
+                
+            }
+            else if(game!.tryCount == 0)
+            {
+                let aPath = UIBezierPath()
+                aPath.move(to: CGPoint(x:x, y: y + 20 + r))
+                aPath.addLine(to: CGPoint(x:x + 5, y: y + 27 + r))
+                aPath.close()
+                
+                let shapeLayer = CAShapeLayer()
+                shapeLayer.path = aPath.cgPath
+                shapeLayer.fillColor = UIColor.black.cgColor
+                shapeLayer.strokeColor = UIColor.black.cgColor
+                shapeLayer.lineWidth = 2.0
+                view.layer.addSublayer(shapeLayer)
+            }
         }
     }
 
