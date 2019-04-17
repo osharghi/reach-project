@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 
+
+//Confetti animation from http://prabhu.xyz/2017/05/08/particle-effects-in-swift-using-caemitterlayer.html
+
 enum Colors {
     
     static let red = UIColor(red: 1.0, green: 0.0, blue: 77.0/255.0, alpha: 1.0)
